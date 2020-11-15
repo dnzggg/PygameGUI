@@ -13,6 +13,7 @@ def lookforinput():
             elif event.key == pygame.K_F4 and alt_pressed:
                 exit()
         func.update(event)
+        rb.update(event)
 
 
 class Slider:
@@ -78,7 +79,10 @@ class RadioButton:
         mouse = pygame.mouse.get_pos()
         if x < mouse[0] < x + width and y < mouse[1] < y + height:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                self.activate()
+                if not self.set:
+                    self.activate()
+                else:
+                    self.deactivate()
                 self.pressed = True
         else:
             self.pressed = False
@@ -92,7 +96,8 @@ class RadioButton:
         self.set = False
 
     def draw(self):
-        pygame.draw.circle(self.screen, self.active_color, self.pos, 11)
+        if self.set:
+            pygame.draw.circle(self.screen, self.active_color, self.pos, 11)
         pygame.draw.circle(self.screen, self.color, self.pos, 12, 2)
 
 
@@ -157,9 +162,11 @@ class GetFunctionKey:
 pygame.init()
 window = pygame.display.set_mode((800, 800))
 func = GetFunctionKey(window)
+rb = RadioButton(window)
 
 while True:
     lookforinput()
     window.fill((0, 0, 0))
     func.draw()
+    rb.draw()
     pygame.display.flip()
